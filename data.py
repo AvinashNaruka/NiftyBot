@@ -1,34 +1,19 @@
 import requests
 
-# ------------------------------------------------------
-# GET NIFTY LTP from MoneyControl (Very Stable)
-# ------------------------------------------------------
 def get_nifty_ltp():
     try:
-        url = "https://priceapi.moneycontrol.com/technicalPriceChartData/indianMarket/indices?symbol=NIFTY%2050"
-        res = requests.get(url, timeout=10).json()
+        url = "https://priceapi.moneycontrol.com/techCharts/indianMarket/stock/history?symbol=NIFTY&resolution=1&from=1700000000&to=1800000000"
+        headers = {
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/json"
+        }
 
-        return float(res["pricecurrent"])
+        res = requests.get(url, headers=headers, timeout=10)
+        data = res.json()
+
+        ltp = data["c"][-1]   # last closing price  
+        return ltp
+
     except Exception as e:
         print("LTP Error:", e)
-        return None
-
-
-# ------------------------------------------------------
-# GET NIFTY OHLC (5-min candles) from MoneyControl
-# ------------------------------------------------------
-def get_nifty_ohlc():
-    try:
-        url = "https://priceapi.moneycontrol.com/technicalPriceChartData/indianMarket/indices?symbol=NIFTY%2050"
-        res = requests.get(url, timeout=10).json()
-
-        # MoneyControl returns full historical list
-        data = res["candles"]
-
-        import pandas as pd
-        df = pd.DataFrame(data, columns=["time", "open", "high", "low", "close", "volume"])
-
-        return df.tail(20)   # last 20 candles for analysis
-    except Exception as e:
-        print("OHLC Error:", e)
         return None
