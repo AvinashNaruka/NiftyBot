@@ -1,5 +1,10 @@
 from fastapi import FastAPI
 from signals import generate_signal
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+
 
 app = FastAPI()
 
