@@ -5,10 +5,11 @@ from signals import generate_signal
 
 app = FastAPI()
 
-# Serve frontend files
+# Serve frontend (index.html + css + js)
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-# Home → Frontend page
+
+# Home → return frontend page
 @app.get("/")
 def frontend():
     return FileResponse("index.html")
