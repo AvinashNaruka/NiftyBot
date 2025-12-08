@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avinash Trading AI – NiftyBot Pro</title>
+
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="header">
+    <h1>⚡ Avinash Trading AI</h1>
+    <p class="subtitle">NiftyBot Pro – Live Option Signals</p>
+</div>
+
+<div class="container">
+    <button id="fetchBtn" class="btn">Generate Signal ⚡</button>
+
+    <div id="loader" class="loader hidden"></div>
+
+    <div id="signalBox" class="signal-box hidden">
+        <h2>📈 Trade Signal</h2>
+
+        <div class="signal-item"><strong>Trend:</strong> <span id="trend"></span></div>
+        <div class="signal-item"><strong>Nifty LTP:</strong> <span id="ltp"></span></div>
+        <div class="signal-item"><strong>Strike:</strong> <span id="strike"></span></div>
+        <div class="signal-item"><strong>Option Type:</strong> <span id="otype"></span></div>
+
+        <hr>
+        <div class="signal-item"><strong>Entry Premium:</strong> <span id="premium"></span></div>
+        <div class="signal-item"><strong>Stoploss:</strong> <span id="sl"></span></div>
+        <div class="signal-item"><strong>Targets:</strong> <span id="targets"></span></div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
