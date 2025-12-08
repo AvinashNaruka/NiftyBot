@@ -1,45 +1,64 @@
-document.getElementById("fetchBtn").addEventListener("click", fetchSignal);
+// ---------------------------
+//  FIXED SCRIPT.JS
+// ---------------------------
 
-async function fetchSignal() {
-    const loader = document.getElementById("loader");
-    const box = document.getElementById("signalBox");
+const btn = document.getElementById("generateBtn");
+const loader = document.getElementById("loader");
 
-    loader.classList.remove("hidden");
-    box.classList.add("hidden");
+const trendEl = document.getElementById("trend");
+const ltpEl = document.getElementById("nifty_ltp");
+const strikeEl = document.getElementById("strike");
+const typeEl = document.getElementById("option_type");
+const entryEl = document.getElementById("entry");
+const slEl = document.getElementById("sl");
+const tgtEl = document.getElementById("tgt");
+
+// Render backend URL
+const API_URL = "https://niftybot-htwt.onrender.com/signal";
+
+btn.addEventListener("click", () => {
+    generateSignal();
+});
+
+async function generateSignal() {
+
+    loader.style.display = "block";
+    btn.disabled = true;
+
+    // timeout controller (Render wake-up takes 30–60 sec)
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 90000); // 90 sec
 
     try {
-        const res = await fetch("https://niftybot-htwt.onrender.com/signal");
+        const res = await fetch(API_URL, {
+            method: "GET",
+            signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+            throw new Error("Server response not OK");
+        }
+
         const data = await res.json();
 
-        loader.classList.add("hidden");
-
+        // ❗ If backend sends error
         if (data.error) {
-            alert("API Error: " + data.message);
+            alert("Server Error: " + data.error);
             return;
         }
 
-        // Fill Data
-        document.getElementById("trend").textContent = data.trend;
-        document.getElementById("ltp").textContent = data.nifty_ltp;
-        document.getElementById("strike").textContent = data.strike;
-        document.getElementById("otype").textContent = data.option_type;
+        // ------------------------
+        // UPDATE UI FIELDS
+        // ------------------------
+        trendEl.textContent = data.trend || "—";
+        ltpEl.textContent = data.ltp || "—";
+        strikeEl.textContent = data.strike || "—";
+        typeEl.textContent = data.option_type || "—";
 
-        document.getElementById("premium").textContent = data.entry_premium;
-        document.getElementById("sl").textContent = data.stoploss;
-        document.getElementById("targets").textContent = data.targets.join(" / ");
+        entryEl.textContent = data.entry || "—";
+        slEl.textContent = data.sl || "—";
+        tgtEl.textContent = data.tgt || "—";
 
-        // Trend Color
-        let t = data.trend;
-        let tspan = document.getElementById("trend");
-
-        if (t === "UP") tspan.className = "up";
-        else if (t === "DOWN") tspan.className = "down";
-        else tspan.className = "side";
-
-        box.classList.remove("hidden");
-
-    } catch (error) {
-        loader.classList.add("hidden");
-        alert("Network Error!");
-    }
-}
+    } ca
