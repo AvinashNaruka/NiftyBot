@@ -1,1 +1,0 @@
-# NiftyBot
