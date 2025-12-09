@@ -1,53 +1,72 @@
+# signals.py
+
 from data import get_nifty_ltp, get_nifty_ohlc
 from indicators import add_indicators, get_trend
 
 
 def _calculate_strike(ltp: float) -> int:
     """Round to nearest 50"""
-    if not ltp:
-        return None
     return int(round(ltp / 50) * 50)
 
 
 def generate_signal() -> dict:
-    try:
-        # GET NIFTY LTP
-        ltp = get_nifty_ltp()
-        if ltp is None:
-            return {"error": "Failed to fetch Nifty LTP"}
+    """
+    Returns signal dictionary for frontend.
+    """
 
-        # GET OHLC data
-        df = get_nifty_ohlc()
-        if df is None or len(df) < 10:
-            return {"error": "OHLC data unavailable"}
+    # ============================
+    # 1️⃣ GET LIVE NIFTY LTP
+    # ============================
+    ltp = get_nifty_ltp()
+    if ltp is None:
+        return {"error": "Failed to fetch Nifty LTP"}
 
-        # Add Indicators
-        df = add_indicators(df)
+    # ============================
+    # 2️⃣ GET OHLC DATA (LAST CANDLE)
+    # ============================
+    ohlc = get_nifty_ohlc()
+    if ohlc is None:
+        return {"error": "Failed to fetch OHLC"}
 
-        # Remove rows with NaN to avoid Series comparison crash
-        df = df.dropna()
-        if len(df) < 5:
-            return {"error": "Indicator calculation failed (NaN values)"}
+    # Convert to DataFrame-like dict for indicators
+    df = {
+        "open": ohlc["open"],
+        "high": ohlc["high"],
+        "low": ohlc["low"],
+        "close": ohlc["close"]
+    }
 
-        # Detect Trend SAFELY
-        trend = get_trend(df)
+    # ============================
+    # 3️⃣ CALCULATE TREND
+    # ============================
+    trend = get_trend(df)
 
-        # Prepare strike price
-        strike = _calculate_strike(ltp)
-        if strike is None:
-            return {"error": "Invalid LTP"}
+    # ============================
+    # 4️⃣ STRIKE PRICE
+    # ============================
+    strike = _calculate_strike(ltp)
 
-        # BUILD FINAL SIGNAL
-        signal = {
-            "ltp": ltp,
-            "strike": strike,
-            "trend": trend,
-        }
+    # ============================
+    # 5️⃣ OPTION TYPE
+    # ============================
+    option_type = "CE" if trend == "UP" else "PE"
 
-        return signal
+    # ============================
+    # 6️⃣ ENTRY – SL – TARGET LOGIC
+    # ============================
+    entry = round(ltp * 0.012, 2)     # Dummy example
+    sl = round(entry * 0.85, 2)
+    target = round(entry * 1.25, 2)
 
-    except Exception as e:
-        return {
-            "error": "internal",
-            "message": str(e)
-        }
+    # ============================
+    # 7️⃣ FINAL RESPONSE
+    # ============================
+    return {
+        "trend": trend,
+        "ltp": ltp,
+        "strike": strike,
+        "option_type": option_type,
+        "entry": entry,
+        "sl": sl,
+        "target": target
+    }
