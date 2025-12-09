@@ -1,42 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Avinash Trading AI – NiftyBot Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avinash Trading AI</title>
 
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #0d1117;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding: 20px;
+        }
 
+        .box {
+            background: #161b22;
+            padding: 20px;
+            margin: auto;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #000;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 5px;
+            background: #21262d;
+            color: white;
+        }
+
+        button {
+            width: 95%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2ea043;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #21262d;
+            border-radius: 10px;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="header">
-    <h1>⚡ Avinash Trading AI</h1>
-    <p class="subtitle">NiftyBot Pro – Live Option Signals</p>
-</div>
+    <h2>Avinash Trading AI</h2>
 
-<div class="container">
-    <button id="fetchBtn" class="btn">Generate Signal ⚡</button>
+    <div class="box">
 
-    <div id="loader" class="loader hidden"></div>
+        <label><b>Manual NIFTY LTP (Optional):</b></label>
+        <input id="manualLtp" type="number" placeholder="Example: 22650">
 
-    <div id="signalBox" class="signal-box hidden">
-        <h2>📈 Trade Signal</h2>
-
-        <div class="signal-item"><strong>Trend:</strong> <span id="trend"></span></div>
-        <div class="signal-item"><strong>Nifty LTP:</strong> <span id="ltp"></span></div>
-        <div class="signal-item"><strong>Strike:</strong> <span id="strike"></span></div>
-        <div class="signal-item"><strong>Option Type:</strong> <span id="otype"></span></div>
-
-        <hr>
-        <div class="signal-item"><strong>Entry Premium:</strong> <span id="premium"></span></div>
-        <div class="signal-item"><strong>Stoploss:</strong> <span id="sl"></span></div>
-        <div class="signal-item"><strong>Targets:</strong> <span id="targets"></span></div>
+        <button onclick="generateSignal()">Generate Signal</button>
     </div>
 
-</div>
+    <div id="result"></div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
+
 </body>
 </html>
