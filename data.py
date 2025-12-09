@@ -1,19 +1,50 @@
 import requests
 
+YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/%5ENSEI?interval=1m"
+
+
 def get_nifty_ltp():
+    """Fetch live NIFTY LTP from Yahoo Finance"""
     try:
-        url = "https://priceapi.moneycontrol.com/techCharts/indianMarket/stock/history?symbol=NIFTY&resolution=1&from=1700000000&to=1800000000"
-        headers = {
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "application/json"
-        }
+        response = requests.get(YAHOO_URL, timeout=5)
+        data = response.json()
 
-        res = requests.get(url, headers=headers, timeout=10)
-        data = res.json()
+        result = data["chart"]["result"][0]
+        meta = result["meta"]
 
-        ltp = data["c"][-1]   # last closing price  
+        ltp = meta["regularMarketPrice"]
         return ltp
 
     except Exception as e:
         print("LTP Error:", e)
+        return None
+
+
+def get_nifty_ohlc():
+    """Fetch last OHLC candle"""
+    try:
+        response = requests.get(YAHOO_URL, timeout=5)
+        data = response.json()
+
+        result = data["chart"]["result"][0]
+        indicators = result["indicators"]["quote"][0]
+
+        timestamps = result["timestamp"]
+        opens = indicators["open"]
+        highs = indicators["high"]
+        lows = indicators["low"]
+        closes = indicators["close"]
+
+        # Last candle
+        ohlc = {
+            "open": opens[-1],
+            "high": highs[-1],
+            "low": lows[-1],
+            "close": closes[-1]
+        }
+
+        return ohlc
+
+    except Exception as e:
+        print("OHLC Error:", e)
         return None
