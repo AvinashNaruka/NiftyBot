@@ -5,22 +5,32 @@ document.getElementById("genBtn").addEventListener("click", async () => {
     let manual = document.getElementById("manualLtp").value.trim();
 
     try {
-        let res = await fetch("https://niftybot-htwt.onrender.com/signal?ltp=" + manual);
+        let url = "https://niftybot-htwt.onrender.com/signal";
+
+        if (manual !== "") {
+            url += "?ltp=" + manual;
+        }
+
+        let res = await fetch(url);
         let data = await res.json();
 
         if (data.error) {
-            box.innerHTML = data.error;
+            box.innerHTML = "<b>Error:</b> " + data.error;
             return;
         }
 
         box.innerHTML = `
-            <div><b>Trend:</b> ${data.trend}</div>
-            <div><b>LTP:</b> ${data.ltp}</div>
-            <div><b>Strike:</b> ${data.strike}</div>
-            <div><b>Type:</b> ${data.option_type}</div>
-            <div><b>Entry Premium:</b> ${data.entry_premium_est}</div>
-            <div><b>SL:</b> ${data.stoploss}</div>
-            <div><b>Targets:</b> ${data.targets.join(", ")}</div>
+            <h3>Trade Signal</h3>
+            <b>Trend:</b> ${data.trend} <br>
+            <b>NIFTY LTP:</b> ${data.ltp} <br>
+            <b>Strike:</b> ${data.strike} <br>
+            <b>Option Type:</b> ${data.option_type} <br>
+            <b>Expiry:</b> ${data.expiry} <br>
+            <b>Entry Premium (Est):</b> ${data.entry_premium_est} <br>
+            <b>Stoploss:</b> ${data.stoploss} <br>
+            <b>Targets:</b> ${data.targets.join(", ")} <br>
+            <b>Confidence:</b> ${(data.confidence * 100).toFixed(1)}% <br>
+            <b>Notes:</b> ${data.notes}
         `;
         
     } catch (e) {
